@@ -131,8 +131,8 @@ const defaultAppDirectory = '/Applications';
 const defaultBinaryPath = 'Contents/MacOS';
 
 const profileFlags = {
-  chromium: '--no-first-run --no-default-browser-check --user-data-dir=',
-  firefox: '-profile ',
+  chromium: '--no-default-browser-check',
+  firefox: undefined,
   safari: undefined
 };
 
@@ -161,7 +161,7 @@ class DesktopBrowser {
     this._appPath = this._path.split('.app')[0] + '.app';
     this._appName = nightly ? this._defaults.nightlyName : this._defaults.name;
     const profileCommand = profileFlags[this._defaults.basedOn];
-    this._profilePath = profileCommand ? joinDir(__dirname, `profiles/${browser}${nightly ? '_nightly' : ''}_profile`) : undefined;
+    this._profilePath = profileCommand;
     if (this._defaults.useOpen) {
       this._command = `open -a "${this._appPath}"`;
     } else {
@@ -171,7 +171,7 @@ class DesktopBrowser {
   }
 
   // Launch the browser.
-  async launch (clean = true) {
+  async launch (clean = false) {
     console.log(this._defaults);
     if (clean && this._profilePath) {
       // Delete old profiles if they exist.
